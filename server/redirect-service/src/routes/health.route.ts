@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { HealthController } from '@url-generate-service/controllers/health.controller';
+import { HealthController } from '@redirect-service/controllers';
 import { injectable, singleton } from 'tsyringe';
 
 @singleton()
@@ -12,7 +12,7 @@ export class HealthRoute {
   }
 
   public routes(): Router {
-    this.router.get('/url-generate-health', this.healthController.health.bind(this.healthController));
+    this.router.get('/redirect-health', this.healthController.health.bind(this.healthController));
 
     return this.router;
   }

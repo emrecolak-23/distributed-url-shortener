@@ -18,7 +18,7 @@ export let emailChannel: Channel | null = null;
 @singleton()
 @injectable()
 export class NotificationServer {
-  private log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'apiAuthServer', 'debug');
+  private log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'apiNotificationServer', 'debug');
   constructor(
     private readonly config: EnvConfig,
     private readonly elasticSearch: ElasticSearch,

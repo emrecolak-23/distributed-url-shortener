@@ -14,12 +14,12 @@ import { EnvConfig } from './configs';
 import { ElasticSearch } from './loaders/elasticsearch';
 import { appRoutes } from './routes';
 
-const SERVER_PORT = 4002;
+const SERVER_PORT = 4001;
 
 @singleton()
 @injectable()
-export class UrlGenerateServer {
-  private log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'apiUrlGenerateServer', 'debug');
+export class RedirectServer {
+  private log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'apiRedirectServer', 'debug');
   constructor(
     private readonly config: EnvConfig,
     private readonly elasticSearch: ElasticSearch
@@ -89,10 +89,10 @@ export class UrlGenerateServer {
           : {
               message: err.message,
               statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-              comingFrom: 'UrlGenerateService errorHandler'
+              comingFrom: 'RedirectService errorHandler'
             };
 
-      this.log.log('error', `UrlGenerateService ${err.comingFrom}: `, errorLog);
+      this.log.log('error', `RedirectService ${err.comingFrom}: `, errorLog);
 
       if (err instanceof CustomError) {
         return res.status(err.statusCode).json(err.serializeError());
@@ -102,7 +102,7 @@ export class UrlGenerateServer {
         message: 'An unexpected error occurred',
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
         status: 'error',
-        comingFrom: 'UrlGenerateService errorHandler'
+        comingFrom: 'RedirectService errorHandler'
       });
       next();
     });
@@ -113,18 +113,18 @@ export class UrlGenerateServer {
       const httpServer: http.Server = new http.Server(app);
       await this.startHttpServer(httpServer);
     } catch (err) {
-      this.log.log('error', 'UrlGenerateService startServer() error method: ', err);
+      this.log.log('error', 'RedirectService startServer() error method: ', err);
     }
   }
 
   private async startHttpServer(httpServer: http.Server): Promise<void> {
     try {
-      this.log.info(`UrlGenerateService server has started with process id of ${process.pid} on. url generate service server has started`);
+      this.log.info(`RedirectService server has started with process id of ${process.pid} on. redirect service server has started`);
       httpServer.listen(SERVER_PORT, () => {
-        this.log.info(`UrlGenerateService server running on port ${SERVER_PORT}`);
+        this.log.info(`RedirectService server running on port ${SERVER_PORT}`);
       });
     } catch (err) {
-      this.log.log('error', 'UrlGenerateService startHttpServer() error method: ', err);
+      this.log.log('error', 'RedirectService startHttpServer() error method: ', err);
     }
   }
 }

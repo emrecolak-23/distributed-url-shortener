@@ -16,6 +16,7 @@ import { appRoutes } from '@gateway-service/routes';
 
 import { isAxiosError } from 'axios';
 import { axiosAuthInstance } from '@gateway-service/services/api/auth.service';
+import { axiosUrlGenerateInstance } from '@gateway-service/services/api/url-generate.service';
 
 const SERVER_PORT = 4000;
 const DEFAULT_ERROR_CODE = StatusCodes.BAD_REQUEST;
@@ -67,6 +68,7 @@ export class GatewayServer {
     app.use((req: Request, _res: Response, next: NextFunction) => {
       if (req.session?.jwt) {
         axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
+        axiosUrlGenerateInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
       }
 
       next();

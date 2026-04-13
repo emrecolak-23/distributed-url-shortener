@@ -5,6 +5,7 @@ import { AuthRoute } from './auth.route';
 import { CurrentUserRoute } from './current-user.route';
 import { UrlGenerateRoute } from './url-generate.route';
 import { AuthMiddleware } from '@gateway-service/middlewares';
+import { RedirectRoute } from './redirect.route';
 
 const BASE_PATH = '/api/gateway/v1';
 
@@ -13,8 +14,11 @@ export const appRoutes = (app: Application) => {
   const authRoute = container.resolve(AuthRoute);
   const currentUserRoute = container.resolve(CurrentUserRoute);
   const urlGenerateRoute = container.resolve(UrlGenerateRoute);
+  const redirectRoute = container.resolve(RedirectRoute);
   const authMiddleware = container.resolve(AuthMiddleware);
+
   app.use('', healthRoute.routes());
+  app.use('', redirectRoute.routes());
   app.use(`${BASE_PATH}/auth`, authRoute.routes());
 
   app.use(
