@@ -1,0 +1,6 @@
+node_modules
+server.md
+.npmrc
+*secret.yaml
+docker-volumes/jenkins_compose/jenkins_agent.env
+*.pem
