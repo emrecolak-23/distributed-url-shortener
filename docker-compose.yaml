@@ -42,6 +42,17 @@ services:
       xpack.security.authc.token.enabled: 'true'
       ELASTIC_PASSWORD: admin1234
 
+  zookeeper:
+    container_name: zookeeper_container
+    image: zookeeper:latest
+    restart: always
+    ports:
+      - '2181:2181'
+    volumes:
+      - zookeeper_data:/data
+    networks:
+      - url_shortener_network
+
 networks:
   url_shortener_network:
     driver: bridge
@@ -49,3 +60,4 @@ networks:
 volumes:
   redis_data:
   cassandra_data:
+  zookeeper_data:
