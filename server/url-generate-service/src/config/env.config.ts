@@ -15,6 +15,7 @@ export class EnvConfig {
   public API_GATEWAY_URL: string;
   public DATABASE_URL: string;
   public ZOOKEEPER_HOST: string;
+  public SHORT_URL_PREFIX: string;
   public ELASTIC_SEARCH_URL: string;
   public ELASTIC_APM_SERVER_URL: string;
   public ELASTIC_APM_SECRET_TOKEN: string;
@@ -30,6 +31,7 @@ export class EnvConfig {
     this.DATABASE_URL = process.env.DATABASE_URL || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
     this.ZOOKEEPER_HOST = process.env.ZOOKEEPER_HOST || '';
+    this.SHORT_URL_PREFIX = process.env.SHORT_URL_PREFIX || '';
     this.ELASTIC_APM_SERVER_URL = process.env.ELASTIC_APM_SERVER_URL || '';
     this.ELASTIC_APM_SECRET_TOKEN = process.env.ELASTIC_APM_SECRET_TOKEN || '';
   }

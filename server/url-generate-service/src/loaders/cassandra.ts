@@ -7,6 +7,9 @@ import { Logger } from 'winston';
 @singleton()
 @injectable()
 export class Cassandra {
+  public getClient(): Client {
+    return this.client;
+  }
   private log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'urlGenerateServiceCassandraConnection', 'debug');
   private client: Client;
   private keyspace: string;

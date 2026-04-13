@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { HealthController } from '@url-generate-service/controller/health.controller';
+import { HealthController } from '@url-generate-service/controllers/health.controller';
 import { injectable, singleton } from 'tsyringe';
 
 @singleton()
