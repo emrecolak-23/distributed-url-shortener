@@ -12,12 +12,12 @@ export class UrlGenerateService {
     private readonly config: EnvConfig
   ) {}
 
-  public async generateUrl(url: string): Promise<string> {
+  public async generateUrl(url: string, userId: number): Promise<string> {
     const shortId = this.zookeeper.generateId();
 
     await this.cassandra
       .getClient()
-      .execute('INSERT INTO urls (short_id, original_url, created_at) VALUES (?, ?, ?)', [shortId, url, new Date()], {
+      .execute('INSERT INTO urls (short_id, original_url, created_at, user_id) VALUES (?, ?, ?, ?)', [shortId, url, new Date(), userId], {
         prepare: true
       });
 

@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
-import { UrlGenerateController } from '@url-generate-service/controllers/url-generate-controller';
 import { injectable, singleton } from 'tsyringe';
+import { UrlGenerateController } from '@gateway-service/controllers/url-generate.controller';
 
 @singleton()
 @injectable()

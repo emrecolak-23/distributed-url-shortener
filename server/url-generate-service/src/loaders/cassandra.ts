@@ -41,6 +41,7 @@ export class Cassandra {
             short_id text PRIMARY KEY,
             original_url text,
             created_at timestamp
+            user_id integer
           )
         `);
     } catch (err) {
