@@ -6,6 +6,10 @@ import { IAuthDocument } from '@emrecolak-23/jobber-share';
 import { Database } from '@auth-service/loaders';
 import { IAuthUser } from '@auth-service/interfaces';
 import { hash } from 'bcryptjs';
+import { IEmailMessageDetail } from '@auth-service/interfaces';
+import { AuthProducer } from '@auth-service/queues/auth.producer';
+import { sign } from 'jsonwebtoken';
+import crypto from 'crypto';
 
 @singleton()
 @injectable()
@@ -13,7 +17,8 @@ export class AuthService {
   private log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'authService', 'debug');
   constructor(
     private readonly config: EnvConfig,
-    private readonly database: Database
+    private readonly database: Database,
+    private readonly authProducer: AuthProducer
   ) {}
 
   async signUp(data: IAuthDocument): Promise<any> {
@@ -30,11 +35,13 @@ export class AuthService {
       }
 
       const hashedPassword = await hash(password!, 10);
-
+      const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20));
+      const randomCharacters: string = randomBytes.toString('hex');
       const user: IAuthUser = {
         username,
         email,
-        password: hashedPassword
+        password: hashedPassword,
+        emailVerificationToken: randomCharacters
       };
 
       const newUser = await this.database.query<IAuthUser>(
@@ -42,8 +49,32 @@ export class AuthService {
         [user.username, user.email, user.password]
       );
 
-      return newUser.rows[0];
-    } catch (error) {}
+      const verificationLink: string = `${this.config.CLIENT_URL}/confirm-email?token=${user.emailVerificationToken}`;
+
+      const emailMessageDetail: IEmailMessageDetail = {
+        receiverEmail: email,
+        verifyLink: verificationLink,
+        template: 'verifyEmail',
+        messageId: crypto.randomUUID().toString()
+      } as IEmailMessageDetail;
+
+      await this.authProducer.publishDirectMessage({
+        exchangeName: 'jobber-email-notification',
+        routingKey: 'auth-email',
+        message: JSON.stringify(emailMessageDetail),
+        logMessage: `Auth Email Message Published: ${JSON.stringify(emailMessageDetail)}`
+      });
+
+      const token = this.signToken(newUser.rows[0].id ?? 0);
+
+      return {
+        user: newUser.rows[0],
+        token
+      };
+    } catch (error) {
+      this.log.error('AuthService signUp() error:', error);
+      throw new BadRequestError('Failed to sign up', 'AuthService signUp() method error');
+    }
   }
 
   async signIn(_data: unknown): Promise<any> {}
@@ -61,4 +92,8 @@ export class AuthService {
   async resentEmailVerification(_email: string, _userId: number): Promise<any> {}
 
   async refreshToken(_username: string): Promise<any> {}
+
+  private signToken(id: number): string {
+    return sign({ id }, `${this.config.JWT_TOKEN}`, { expiresIn: '1h' });
+  }
 }
