@@ -11,7 +11,7 @@ import { QueueConnection } from '@notification-service/queues/connection';
 import { Channel } from 'amqplib';
 import { EmailConsumer } from '@notification-service/queues/email.consumer';
 
-const SERVER_PORT = 4003;
+const SERVER_PORT = 4004;
 
 export let emailChannel: Channel | null = null;
 

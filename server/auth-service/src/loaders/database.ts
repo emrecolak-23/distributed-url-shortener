@@ -42,7 +42,6 @@ export class Database {
         passwordResetToken TEXT,
         passwordResetTokenExpiresAt TIMESTAMP,
         passwordResetAt TIMESTAMP,
-        profilePicture TEXT NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_DATE NOT NULL,
         updatedAt TIMESTAMP DEFAULT CURRENT_DATE NOT NULL,
         PRIMARY KEY (id)

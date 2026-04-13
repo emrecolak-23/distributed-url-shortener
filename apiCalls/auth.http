@@ -1,0 +1,44 @@
+@baseUrl = http://localhost:4000
+@urlPath = api/gateway/v1/auth
+
+### Signup
+POST {{baseUrl}}/{{urlPath}}/signup
+Content-Type: application/json
+Accept: application/json
+
+{
+    "username": "mjoe003",
+    "password": "Pass123.",
+    "email": "mjoelak003@gmail.com"
+}
+
+
+
+### Signin
+POST {{baseUrl}}/{{urlPath}}/signin
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+    "username": "mjoelak003",
+    "password": "Pass123."
+}
+
+### Current User
+GET {{baseUrl}}/{{urlPath}}/current-user
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+### Gateway Health
+GET {{baseUrl}}/gateway-health
+Content-Type: application/json
+
+### 
+GET {{baseUrl}}/{{urlPath}}/search/gig/0/5/forward?query=beauty&delivery_time=3&minPrice=5&maxPrice=20
+Content-Type: application/json
+Accept: application/json
+
+
+

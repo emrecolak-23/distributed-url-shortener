@@ -15,6 +15,7 @@ import { ElasticSearch } from '@gateway-service/loaders';
 import { appRoutes } from '@gateway-service/routes';
 
 import { isAxiosError } from 'axios';
+import { axiosAuthInstance } from '@gateway-service/services/api/auth.service';
 
 const SERVER_PORT = 4000;
 const DEFAULT_ERROR_CODE = StatusCodes.BAD_REQUEST;
@@ -63,9 +64,10 @@ export class GatewayServer {
       })
     );
 
-    app.use((_req: Request, _res: Response, next: NextFunction) => {
-      //   if (req.session?.jwt) {
-      //   }
+    app.use((req: Request, _res: Response, next: NextFunction) => {
+      if (req.session?.jwt) {
+        axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session.jwt}`;
+      }
 
       next();
     });
@@ -100,7 +102,7 @@ export class GatewayServer {
 
     app.use((err: IErrorResponse | Error, _req: Request, res: Response, next: NextFunction) => {
       if (err instanceof SyntaxError && 'body' in err) {
-        this.log.log('error', `GatewayService JSON parse error: ${err.message}`, err);
+        this.log.log('error', `GatewayService JSON parse error: ${err.message}`, this.getSafeErrorMeta(err));
         return res.status(StatusCodes.BAD_REQUEST).json({
           message: 'Invalid JSON format',
           statusCode: StatusCodes.BAD_REQUEST,
@@ -110,18 +112,18 @@ export class GatewayServer {
       }
 
       if (err instanceof CustomError) {
-        this.log.log('error', `GatewayService ${err.comingFrom}: `, err);
+        this.log.log('error', `GatewayService ${err.comingFrom}: `, this.getSafeErrorMeta(err));
         return res.status(err.statusCode).json(err.serializeError());
       }
 
       if (isAxiosError(err)) {
-        this.log.log('error', `GatewayService Axios error - ${err.response?.data.comingFrom}:`, err);
+        this.log.log('error', `GatewayService Axios error - ${err.response?.data.comingFrom}:`, this.getSafeErrorMeta(err));
         return res.status(err.response?.data.statusCode ?? DEFAULT_ERROR_CODE).json({
           message: err.response?.data.message ?? DEFAULT_ERROR_MESSAGE
         });
       }
 
-      this.log.log('error', `GatewayService ${(err as IErrorResponse).comingFrom || 'Unknown error'}: `, err);
+      this.log.log('error', `GatewayService ${(err as IErrorResponse).comingFrom || 'Unknown error'}: `, this.getSafeErrorMeta(err));
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         message: err.message,
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -130,6 +132,28 @@ export class GatewayServer {
       });
       next();
     });
+  }
+
+  private getSafeErrorMeta(err: unknown): Record<string, unknown> {
+    if (isAxiosError(err)) {
+      return {
+        name: err.name,
+        message: err.message,
+        code: err.code,
+        httpStatusCode: err.response?.status,
+        responseStatusCode: err.response?.data?.statusCode,
+        responseStatusText: err.response?.data?.status,
+        comingFrom: err.response?.data?.comingFrom
+      };
+    }
+
+    const typedError = err as Partial<IErrorResponse> & Error;
+    return {
+      name: typedError.name,
+      message: typedError.message,
+      comingFrom: typedError.comingFrom,
+      statusCode: typedError.statusCode
+    };
   }
 
   private async startServer(app: Application): Promise<void> {

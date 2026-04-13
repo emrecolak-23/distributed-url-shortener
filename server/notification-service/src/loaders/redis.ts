@@ -12,7 +12,7 @@ export class Redis {
   private connectionPromise: Promise<void> | null = null;
 
   constructor(private readonly config: EnvConfig) {
-    this.log = winstonLogger(this.config.ELASTIC_SEARCH_URL ?? 'redis', 'gigServiceRedis', 'debug');
+    this.log = winstonLogger(this.config.ELASTIC_SEARCH_URL ?? 'redis', 'notificationServiceRedis', 'debug');
 
     this.client = createClient({
       url: this.config.REDIS_HOST,
