@@ -10,6 +10,6 @@ export class UrlGenerateController {
   public async generateUrl(req: Request, res: Response): Promise<void> {
     const { longUrl } = req.body;
     const shortUrl = await this.urlGenerateService.generateUrl(longUrl);
-    res.status(200).json({ longUrl, shortUrl });
+    res.status(200).json({ longUrl, shortUrl, message: 'Url generated successfully' });
   }
 }
