@@ -2,8 +2,8 @@ import { injectable, singleton } from 'tsyringe';
 import { Request, Response } from 'express';
 import { AuthService } from '@auth-service/services/auth.service';
 import { StatusCodes } from 'http-status-codes';
-import { IAuthUserResponse } from '@auth-service/interfaces/create-auth-user.interface';
-import { IAuthDocument } from '@emrecolak-23/jobber-share';
+import { IAuthUserResponse } from '@auth-service/interfaces';
+import { IAuthUser } from '@auth-service/interfaces';
 
 @injectable()
 @singleton()
@@ -33,7 +33,7 @@ export class AuthController {
   async verifyEmail(req: Request, res: Response): Promise<void> {
     const { token } = req.body;
 
-    const updatedUser: IAuthDocument = await this.authService.verifyEmail(token);
+    const updatedUser: IAuthUser = await this.authService.verifyEmail(token);
 
     res.status(StatusCodes.OK).json({
       message: 'Email verified successfully',
@@ -73,7 +73,7 @@ export class AuthController {
   }
 
   async currentUser(req: Request, res: Response): Promise<void> {
-    const user: IAuthDocument | null = await this.authService.currentUser(req.currentUser?.id!);
+    const user: IAuthUser | null = await this.authService.currentUser(req.currentUser?.id!);
 
     res.status(StatusCodes.OK).json({
       message: 'User fetched successfully',
@@ -83,7 +83,7 @@ export class AuthController {
 
   async resentEmailVerification(req: Request, res: Response): Promise<void> {
     const { email, userId } = req.body;
-    const updatedUser: IAuthDocument = await this.authService.resentEmailVerification(email, userId);
+    const updatedUser: IAuthUser = await this.authService.resentEmailVerification(email, userId);
 
     res.status(StatusCodes.OK).json({
       message: 'Email verification resent successfully',

@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import { injectable, singleton } from 'tsyringe';
-import { AuthController } from '@gateway-service/controllers/auth.controller';
+import { AuthController } from '@gateway-service/controllers';
 
 @singleton()
 @injectable()

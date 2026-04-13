@@ -5,8 +5,10 @@ export interface IAuthUser {
   password?: string;
   emailVerified?: number;
   emailVerificationToken?: string;
+  emailVerificationTokenExpiresAt?: Date;
   createdAt?: Date;
   updatedAt?: Date;
   passwordResetToken?: string;
-  passwordResetExpires?: Date;
+  passwordResetTokenExpiresAt?: Date;
+  passwordResetAt?: Date;
 }
