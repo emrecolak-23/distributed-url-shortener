@@ -22,6 +22,21 @@ services:
     networks:
       - url_shortener_network
 
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=url_shortener
+      - POSTGRES_DB=url_shortener_users
+      - POSTGRES_PASSWORD=api
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    networks:
+      - url_shortener_network
+
   elasticsearch:
     container_name: elasticsearch_container
     image: elasticsearch:8.17.0

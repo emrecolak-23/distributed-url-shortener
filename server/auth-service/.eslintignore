@@ -1,0 +1,9 @@
+.webpack/
+
+.svelte-kit
+
+Dockerfile
+Dockerfile.dev
+.dockerignore
+.npmrc
+Jenkinsfile

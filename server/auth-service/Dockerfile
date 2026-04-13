@@ -18,6 +18,6 @@ COPY .npmrc ./
 RUN npm install -g pnpm pm2 && pnpm install --no-frozen-lockfile --prod
 COPY --from=builder /app/build ./build
 
-EXPOSE 4002
+EXPOSE 4003
 
 CMD ["npm", "run", "start"]
