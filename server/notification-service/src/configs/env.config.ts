@@ -9,6 +9,7 @@ export class EnvConfig {
   public SENDER_EMAIL: string | undefined;
   public SENDER_EMAIL_PASSWORD: string | undefined;
   public ELASTIC_SEARCH_URL: string | undefined;
+  public REDIS_HOST: string | undefined;
 
   constructor() {
     this.NODE_ENV = process.env.NODE_ENV || '';
@@ -17,5 +18,6 @@ export class EnvConfig {
     this.SENDER_EMAIL = process.env.SENDER_EMAIL || '';
     this.SENDER_EMAIL_PASSWORD = process.env.SENDER_EMAIL_PASSWORD || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
+    this.REDIS_HOST = process.env.REDIS_HOST || '';
   }
 }

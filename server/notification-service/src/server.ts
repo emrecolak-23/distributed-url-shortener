@@ -9,6 +9,7 @@ import { ElasticSearch } from '@notification-service/loaders';
 import { appRoutes } from '@notification-service/routes';
 import { QueueConnection } from '@notification-service/queues/connection';
 import { Channel } from 'amqplib';
+import { EmailConsumer } from '@notification-service/queues/email.consumer';
 
 const SERVER_PORT = 4003;
 
@@ -21,7 +22,8 @@ export class NotificationServer {
   constructor(
     private readonly config: EnvConfig,
     private readonly elasticSearch: ElasticSearch,
-    private readonly queueConnection: QueueConnection
+    private readonly queueConnection: QueueConnection,
+    private readonly emailConsumer: EmailConsumer
   ) {}
 
   public start(app: Application): void {
@@ -43,7 +45,7 @@ export class NotificationServer {
 
   private async startQueues(): Promise<void> {
     emailChannel = await this.queueConnection.getChannel();
-    console.log('emailChannel', emailChannel);
+    this.emailConsumer.consumeAuthEmailMessages(emailChannel);
   }
 
   private async startServer(app: Application): Promise<void> {
