@@ -15,6 +15,9 @@ export class EnvConfig {
   public POSTGRES_DB: string;
   public POSTGRES_USER: string;
   public POSTGRES_PASSWORD: string;
+  public POSTGRES_HOST: string;
+  public POSTGRES_PORT: string;
+  public CLUSTER_TYPE: string;
   public ELASTIC_SEARCH_URL: string;
 
   constructor() {
@@ -27,6 +30,9 @@ export class EnvConfig {
     this.POSTGRES_DB = process.env.POSTGRES_DB || '';
     this.POSTGRES_USER = process.env.POSTGRES_USER || '';
     this.POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD || '';
+    this.POSTGRES_HOST = process.env.POSTGRES_HOST || '';
+    this.POSTGRES_PORT = process.env.POSTGRES_PORT || '';
+    this.CLUSTER_TYPE = process.env.CLUSTER_TYPE || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
   }
 }

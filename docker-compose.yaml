@@ -68,13 +68,6 @@ services:
     networks:
       - url_shortener_network
 
-  datastax-studio:
-    container_name: datastax_studio_container
-    image: datastax/dse-studio:latest
-    ports:
-      - '9091:9091'
-    networks:
-      - url_shortener_network
 
 networks:
   url_shortener_network:
@@ -84,3 +77,4 @@ volumes:
   redis_data:
   cassandra_data:
   zookeeper_data:
+  postgres_data:
