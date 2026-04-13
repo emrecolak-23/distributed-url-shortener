@@ -18,6 +18,7 @@ export class EnvConfig {
   public POSTGRES_HOST: string;
   public POSTGRES_PORT: string;
   public CLUSTER_TYPE: string;
+  public RABBITMQ_ENDPOINT: string;
   public ELASTIC_SEARCH_URL: string;
 
   constructor() {
@@ -34,5 +35,6 @@ export class EnvConfig {
     this.POSTGRES_PORT = process.env.POSTGRES_PORT || '';
     this.CLUSTER_TYPE = process.env.CLUSTER_TYPE || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
+    this.RABBITMQ_ENDPOINT = process.env.RABBITMQ_ENDPOINT || '';
   }
 }

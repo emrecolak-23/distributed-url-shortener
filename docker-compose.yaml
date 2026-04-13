@@ -68,6 +68,19 @@ services:
     networks:
       - url_shortener_network
 
+  rabbitmq:
+    container_name: rabbitmq_container
+    image: rabbitmq:4.0-management-alpine
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=url_shortener
+      - RABBITMQ_DEFAULT_PASS=api
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    networks:
+      - url_shortener_network
+
 
 networks:
   url_shortener_network:

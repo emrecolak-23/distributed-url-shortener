@@ -32,14 +32,20 @@ export class Database {
   async createTableText(): Promise<string> {
     return `
     CREATE TABLE IF NOT EXISTS public.users (
-      id SERIAL UNIQUE,
-      username TEXT NOT NULL,
-      password TEXT NOT NULL,
-      email TEXT NOT NULL,
-      profilePicture TEXT NOT NULL,
-      createdAt TIMESTAMP DEFAULT CURRENT_DATE NOT NULL,
-      updatedAt TIMESTAMP DEFAULT CURRENT_DATE NOT NULL,
-      PRIMARY KEY (id)
+        id SERIAL UNIQUE,
+        username TEXT NOT NULL,
+        password TEXT NOT NULL,
+        email TEXT NOT NULL,
+        emailVerified BOOLEAN DEFAULT FALSE,
+        emailVerificationToken TEXT,
+        emailVerificationTokenExpiresAt TIMESTAMP,
+        passwordResetToken TEXT,
+        passwordResetTokenExpiresAt TIMESTAMP,
+        passwordResetAt TIMESTAMP,
+        profilePicture TEXT NOT NULL,
+        createdAt TIMESTAMP DEFAULT CURRENT_DATE NOT NULL,
+        updatedAt TIMESTAMP DEFAULT CURRENT_DATE NOT NULL,
+        PRIMARY KEY (id)
     );
     `;
   }

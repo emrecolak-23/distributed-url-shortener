@@ -13,8 +13,12 @@ import { injectable, singleton } from 'tsyringe';
 import { ElasticSearch } from '@auth-service/loaders';
 import { verify } from 'jsonwebtoken';
 import { appRoutes } from '@auth-service/routes';
+import { QueueConnection } from '@auth-service/queues/connection';
+import { Channel, ConfirmChannel } from 'amqplib';
 
 const SERVER_PORT = 4003;
+export let authChannel: Channel | null = null;
+export let authConfirmChannel: ConfirmChannel | null = null;
 
 @singleton()
 @injectable()
@@ -22,7 +26,8 @@ export class AuthServer {
   private log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'apiAuthServer', 'debug');
   constructor(
     private readonly config: EnvConfig,
-    private readonly elasticSearch: ElasticSearch
+    private readonly elasticSearch: ElasticSearch,
+    private readonly queueConnection: QueueConnection
   ) {}
 
   public start(app: Application): void {
@@ -30,6 +35,9 @@ export class AuthServer {
     this.standartMiddleware(app);
     this.routesMiddleware(app);
     this.startsElasticSearch();
+    this.startQueues().catch((err) => {
+      this.log.error('AuthService failed to connect to RabbitMQ:', err);
+    });
     this.errorHandler(app);
     this.startServer(app);
   }
@@ -68,6 +76,11 @@ export class AuthServer {
 
   private startsElasticSearch(): void {
     this.elasticSearch.checkConnection();
+  }
+
+  private async startQueues(): Promise<void> {
+    authChannel = await this.queueConnection.getChannel();
+    authConfirmChannel = await this.queueConnection.getConfirmChannel();
   }
 
   private errorHandler(app: Application): void {
