@@ -1,0 +1,16 @@
+FROM node:25-alpine3.22
+
+WORKDIR /app
+
+COPY package.json ./
+COPY tsconfig.json ./
+COPY .npmrc ./
+COPY src ./src
+COPY tools ./tools
+
+RUN ls -a
+RUN npm install && npm install -g nodemon
+
+EXPOSE 4001
+
+CMD ["npm", "run", "dev"]
