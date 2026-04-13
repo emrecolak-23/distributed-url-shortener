@@ -12,6 +12,7 @@ import { injectable, singleton } from 'tsyringe';
 import { verify } from 'jsonwebtoken';
 import { EnvConfig } from './config';
 import { ElasticSearch } from './loaders/elasticsearch';
+import { appRoutes } from './routes';
 
 const SERVER_PORT = 4000;
 
@@ -65,7 +66,9 @@ export class UrlGenerateServer {
     this.elasticSearch.checkConnection();
   }
 
-  private routesMiddleware(_app: Application): void {}
+  private routesMiddleware(app: Application): void {
+    appRoutes(app);
+  }
 
   private errorHandler(app: Application): void {
     app.all(/(.*)/, (req: Request, res: Response, next: NextFunction) => {

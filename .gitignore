@@ -4,3 +4,5 @@ server.md
 *secret.yaml
 docker-volumes/jenkins_compose/jenkins_agent.env
 *.pem
+.DS_Store
+.env
