@@ -10,11 +10,11 @@ import compression from 'compression';
 import { StatusCodes } from 'http-status-codes';
 import { injectable, singleton } from 'tsyringe';
 import { verify } from 'jsonwebtoken';
-import { EnvConfig } from './config';
+import { EnvConfig } from './configs';
 import { ElasticSearch } from './loaders/elasticsearch';
 import { appRoutes } from './routes';
 
-const SERVER_PORT = 4000;
+const SERVER_PORT = 4002;
 
 @singleton()
 @injectable()

@@ -1,7 +1,7 @@
 import { injectable, singleton } from 'tsyringe';
 import { ZooKeeper } from '@url-generate-service/loaders/zookeeper';
 import { Cassandra } from '@url-generate-service/loaders/cassandra';
-import { EnvConfig } from '@url-generate-service/config';
+import { EnvConfig } from '@url-generate-service/configs';
 
 @singleton()
 @injectable()

@@ -1,7 +1,7 @@
 import { winstonLogger } from '@emrecolak-23/jobber-share';
 import { Client } from 'cassandra-driver';
 import { injectable, singleton } from 'tsyringe';
-import { EnvConfig } from '@url-generate-service/config';
+import { EnvConfig } from '@url-generate-service/configs';
 import { Logger } from 'winston';
 
 @singleton()

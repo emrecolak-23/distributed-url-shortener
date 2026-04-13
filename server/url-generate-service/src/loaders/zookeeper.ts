@@ -1,6 +1,6 @@
 import { winstonLogger } from '@emrecolak-23/jobber-share';
 import { injectable, singleton } from 'tsyringe';
-import { EnvConfig } from '@url-generate-service/config';
+import { EnvConfig } from '@url-generate-service/configs';
 import { Logger } from 'winston';
 import { createClient, Client, CreateMode } from 'node-zookeeper-client';
 

@@ -3,8 +3,8 @@ FROM node:25-alpine3.22
 WORKDIR /app
 
 COPY package.json ./
-COPY .npmrc ./
 COPY tsconfig.json ./
+COPY .npmrc ./
 COPY src ./src
 
 RUN ls -a

@@ -1,6 +1,6 @@
 import { winstonLogger } from '@emrecolak-23/jobber-share';
 import { Logger } from 'winston';
-import { EnvConfig } from '@url-generate-service/configs';
+import { EnvConfig } from '@gateway-service/configs';
 import { Client } from '@elastic/elasticsearch';
 import { ClusterHealthResponse } from '@elastic/elasticsearch/lib/api/types';
 import { injectable, singleton } from 'tsyringe';
@@ -8,8 +8,8 @@ import { injectable, singleton } from 'tsyringe';
 @singleton()
 @injectable()
 export class ElasticSearch {
-  private log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'urlGenerateServiceElasticConnection', 'debug');
-  elasticSearchClient: Client;
+  log: Logger = winstonLogger(`${this.config.ELASTIC_SEARCH_URL}`, 'apiGatewayElasticConnection', 'debug');
+  private elasticSearchClient: Client;
 
   constructor(private readonly config: EnvConfig) {
     this.elasticSearchClient = new Client({
@@ -23,13 +23,13 @@ export class ElasticSearch {
     let isConnected = false;
     while (!isConnected) {
       try {
-        this.log.info('UrlGenerateService Connecting to ElasticSearch...');
+        this.log.info('GatewayService Connecting to ElasticSearch...');
         const health: ClusterHealthResponse = await this.elasticSearchClient.cluster.health({});
-        this.log.info(`UrlGenerateService ElasticSearch health status - ${health.status}`);
+        this.log.info(`GatewayService ElasticSearch health status - ${health.status}`);
         isConnected = true;
       } catch (error) {
         this.log.error('Connection to ElasticSearch failed, retrying in 3 seconds...');
-        this.log.log('error', 'UrlGenerateService checkConnection method error: ', error);
+        this.log.log('error', 'GatewayService checkConnection method error: ', error);
         await new Promise((resolve) => setTimeout(resolve, 3000));
       }
     }
