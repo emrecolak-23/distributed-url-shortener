@@ -1,4 +1,4 @@
-import { IAuthUser } from '@auth-service/interfaces';
+import { IAuthUser } from './auth-user.interface';
 
 export interface IAuthUserResponse {
   user: IAuthUser;

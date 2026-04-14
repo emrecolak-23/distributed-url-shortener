@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-queue
+  namespace: url-shortener
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: url-queue
+  template:
+    metadata:
+      labels:
+        app: url-queue
+    spec:
+      containers:
+        - name: url-queue
+          image: rabbitmq:4.0-management-alpine
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-rabbitmq-user
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-rabbitmq-password
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 500m
+            limits:
+              memory: 1Gi
+              cpu: 500m
+          ports:
+            - name: queue
+              containerPort: 5672
+              protocol: TCP
+            - name: management
+              containerPort: 15672
+              protocol: TCP
+          volumeMounts:
+            - name: rabbitmq-local-storage
+              mountPath: /var/lib/rabbitmq
+      volumes:
+        - name: rabbitmq-local-storage
+          persistentVolumeClaim:
+            claimName: rabbitmq-pvc

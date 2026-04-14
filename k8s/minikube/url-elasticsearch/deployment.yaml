@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-elastic
+  namespace: url-shortener
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: url-elastic
+  minReadySeconds: 10
+  progressDeadlineSeconds: 600
+  template:
+    metadata:
+      labels:
+        app: url-elastic
+    spec:
+      terminationGracePeriodSeconds: 10
+      initContainers:
+        - name: busybox
+          image: busybox:latest
+          command: ['sh', '-c', 'chown -R 1000:1000 /usr/share/elasticsearch/data']
+          volumeMounts:
+            - name: elasticsearch-local-storage
+              mountPath: /usr/share/elasticsearch/data
+      containers:
+        - name: url-elastic
+          image: elasticsearch:8.17.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-elasticsearch-password
+            - name: discovery.type
+              value: single-node
+            - name: ES_JAVA_OPTS
+              value: '-Xmx1g -Xms1g'
+            - name: bootstrap.memory_lock
+              value: 'true'
+            - name: xpack.security.enabled
+              value: 'true'
+            - name: xpack.security.http.ssl.enabled
+              value: 'false'
+            - name: xpack.security.transport.ssl.enabled
+              value: 'false'
+            - name: xpack.security.authc.api_key.enabled
+              value: 'true'
+            - name: xpack.monitoring.collection.enabled
+              value: 'true'
+            - name: xpack.security.enrollment.enabled
+              value: 'true'
+            - name: xpack.security.authc.token.enabled
+              value: 'true'
+          resources:
+            limits:
+              memory: '4Gi'
+              cpu: '1500m'
+            requests:
+              memory: '4Gi'
+              cpu: '250m'
+          ports:
+            - name: url-elastic
+              containerPort: 9200
+          volumeMounts:
+            - name: elasticsearch-local-storage
+              mountPath: /usr/share/elasticsearch/data
+      volumes:
+        - name: elasticsearch-local-storage
+          persistentVolumeClaim:
+            claimName: elasticsearch-pvc

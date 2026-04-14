@@ -5,15 +5,14 @@
         "dom",
         "ES2015"
       ],
-      "module": "commonjs",
-      "baseUrl": ".",
+      "module": "Node16",
       "outDir": "./build",
       "rootDir": ".",
       "strict": true,
       "noImplicitAny": true,
       "noUnusedLocals": true,
       "noUnusedParameters": true,
-      "moduleResolution": "node",
+      "moduleResolution": "node16",
       "esModuleInterop": true,
       "sourceMap": true,
       "alwaysStrict": true,
@@ -34,7 +33,7 @@
       ],
       "paths": {
         "@gateway-service/*": [
-          "src/*"
+          "./src/*"
         ]
       },
       "skipLibCheck": true

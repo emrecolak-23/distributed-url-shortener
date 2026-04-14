@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: url-gateway-ingress
+  namespace: url-shortener
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  defaultBackend:
+    service:
+      name: url-gateway
+      port:
+        number: 4000
+  tls:
+    - hosts:
+        - url-shortener.dev
+      secretName: gateway-ingress-tls
+  rules:
+    - host: url-shortener.dev
+      http:
+        paths:
+          - path: /api/gateway/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: url-gateway
+                port:
+                  number: 4000

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: url-queue
+  namespace: url-shortener
+spec:
+  type: ClusterIP
+  selector:
+    app: url-queue
+  ports:
+    - name: queue
+      port: 5672
+      targetPort: 5672
+      protocol: TCP
+    - name: management
+      port: 15672
+      targetPort: 15672
+      protocol: TCP
