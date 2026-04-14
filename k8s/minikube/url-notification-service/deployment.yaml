@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: url-gateway
+  name: url-notifications
   namespace: url-shortener
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: url-gateway
+      app: url-notifications
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -16,11 +16,11 @@ spec:
   template:
     metadata:
       labels:
-        app: url-gateway
+        app: url-notifications
     spec:
       containers:
-        - name: url-gateway
-          image: colakkemree/url-shortener-gateway:stable
+        - name: url-notifications
+          image: colakkemree/url-shortener-notifications:stable
           imagePullPolicy: Always
           resources:
             limits:
@@ -30,44 +30,35 @@ spec:
               cpu: 100m
               memory: 150Mi
           ports:
-            - name: users
-              containerPort: 4000
+            - name: notifications
+              containerPort: 4004
           env:
             - name: ENABLE_APM
               value: '1'
             - name: NODE_ENV
               value: 'production'
-            - name: SECRET_KEY_ONE
-              valueFrom:
-                secretKeyRef:
-                  name: url-backend-secret
-                  key: secret-key-one
-            - name: SECRET_KEY_TWO
-              valueFrom:
-                secretKeyRef:
-                  name: url-backend-secret
-                  key: secret-key-two
-            - name: GATEWAY_JWT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: url-backend-secret
-                  key: gateway-jwt-token
-            - name: JWT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: url-backend-secret
-                  key: jwt-token
-            - name: CLIENT_URL
-              value: 'https://url-shortener.info'
-            - name: AUTH_BASE_URL
-              value: 'http://url-auth.url-shortener.svc.cluster.local:4003'
-            - name: USERS_BASE_URL
-              value: 'http://url-users.production.svc.cluster.local:4003'
             - name: REDIS_HOST
               valueFrom:
                 secretKeyRef:
                   name: url-backend-secret
                   key: url-redis-host
+            - name: CLIENT_URL
+              value: 'http://localhost:3000'
+            - name: RABBITMQ_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-rabbitmq-endpoint
+            - name: SENDER_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: sender-email
+            - name: SENDER_EMAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: sender-email-password
             - name: ELASTIC_SEARCH_URL
               valueFrom:
                 secretKeyRef:
