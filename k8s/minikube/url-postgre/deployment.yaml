@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-postgres
+  namespace: url-shortener
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate #
+  selector:
+    matchLabels:
+      app: url-postgres
+  template:
+    metadata:
+      labels:
+        app: url-postgres
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: url-postgres
+          image: postgres:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-postgres-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-postgres-password
+            - name: POSTGRES_DB
+              value: url_users
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          resources:
+            limits:
+              memory: '1Gi'
+              cpu: '0.5'
+            requests:
+              cpu: 100m
+              memory: 150Mi
+          ports:
+            - name: url-postgres
+              containerPort: 5432
+          volumeMounts:
+            - name: postgres-local-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          readinessProbe:
+            exec:
+              command: ['psql', '-w', '-U', 'url_shortener', '-d', 'url_users', '-c', 'SELECT 1']
+            initialDelaySeconds: 120
+            periodSeconds: 300
+            timeoutSeconds: 60
+          livenessProbe:
+            exec:
+              command: ['psql', '-w', '-U', 'url_shortener', '-d', 'url_users', '-c', 'SELECT 1']
+            initialDelaySeconds: 120
+            periodSeconds: 300
+            timeoutSeconds: 60
+      volumes:
+        - name: postgres-local-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc

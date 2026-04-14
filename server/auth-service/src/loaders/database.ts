@@ -79,9 +79,9 @@ export class Database {
 
   private registerEventHandlers(): void {
     this.pool.on('error', (error) => {
-      this.log.log('error', 'ReviewService unexpected database error:', error);
+      this.log.log('error', 'AuthService unexpected database error:', error);
     });
-    this.pool.on('connect', () => this.log.info('ReviewService Database connected'));
+    this.pool.on('connect', () => this.log.info('AuthService Database connected'));
   }
 
   async query<T extends QueryResultRow = QueryResultRow>(text: string, params?: unknown[]): Promise<QueryResult<T>> {

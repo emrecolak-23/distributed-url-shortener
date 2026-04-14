@@ -2,7 +2,7 @@ import { winstonLogger } from '@emrecolak-23/jobber-share';
 import { Logger } from 'winston';
 import { EnvConfig } from '@auth-service/configs';
 import { Client } from '@elastic/elasticsearch';
-import { ClusterHealthResponse } from '@elastic/elasticsearch/lib/api/types';
+import { estypes } from '@elastic/elasticsearch';
 import { injectable, singleton } from 'tsyringe';
 
 @singleton()
@@ -24,7 +24,7 @@ export class ElasticSearch {
     while (!isConnected) {
       try {
         this.log.info('AuthService Connecting to ElasticSearch...');
-        const health: ClusterHealthResponse = await this.elasticSearchClient.cluster.health({});
+        const health: estypes.ClusterHealthResponse = await this.elasticSearchClient.cluster.health({});
         this.log.info(`AuthService ElasticSearch health status - ${health.status}`);
         isConnected = true;
       } catch (error) {
