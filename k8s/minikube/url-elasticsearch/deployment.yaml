@@ -57,10 +57,10 @@ spec:
               value: 'true'
           resources:
             limits:
-              memory: '4Gi'
+              memory: '2Gi'
               cpu: '1500m'
             requests:
-              memory: '4Gi'
+              memory: '1Gi'
               cpu: '250m'
           ports:
             - name: url-elastic
