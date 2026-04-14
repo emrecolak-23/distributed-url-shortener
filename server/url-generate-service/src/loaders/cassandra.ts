@@ -40,8 +40,8 @@ export class Cassandra {
           CREATE TABLE IF NOT EXISTS urls (
             short_id text PRIMARY KEY,
             original_url text,
-            created_at timestamp
-            user_id integer
+            created_at timestamp,
+            user_id int
           )
         `);
     } catch (err) {

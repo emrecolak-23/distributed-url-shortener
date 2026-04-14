@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-redirect
+  namespace: url-shortener
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: url-redirect
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  template:
+    metadata:
+      labels:
+        app: url-redirect
+    spec:
+      containers:
+        - name: url-redirect
+          image: colakkemree/url-shortener-redirect:stable
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 150Mi
+          ports:
+            - name: redirect
+              containerPort: 4001
+          env:
+            - name: ENABLE_APM
+              value: "1"
+            - name: NODE_ENV
+              value: "production"
+            - name: GATEWAY_JWT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: gateway-jwt-token
+            - name: JWT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: jwt-token
+            - name: CLIENT_URL
+              value: "https://url-shortener.info"
+            - name: API_GATEWAY_URL
+              value: "http://url-gateway.url-shortener.svc.cluster.local:4000"
+            - name: DATABASE_URL
+              value: "cassandra://url-cassandra.url-shortener.svc.cluster.local:9042/url_shortener"
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-redis-host
+            - name: ZOOKEEPER_HOST
+              value: "url-zookeeper.url-shortener.svc.cluster.local:2181"
+            - name: SHORT_URL_PREFIX
+              value: "https://url-shortener.dev/"
+            - name: ELASTIC_SEARCH_URL
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-elasticsearch-url
+            - name: ELASTIC_APM_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-elastic-apm-server-url
+            - name: ELASTIC_APM_SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: url-backend-secret
+                  key: url-elastic-apm-secret-token

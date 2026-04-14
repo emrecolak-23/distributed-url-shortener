@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: url-redirect
+  namespace: url-shortener
+spec:
+  type: ClusterIP
+  selector:
+    app: url-redirect
+  ports:
+    - name: redirect
+      port: 4001
+      targetPort: 4001
+      protocol: TCP
