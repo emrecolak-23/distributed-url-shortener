@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: url-cassandra
+  namespace: url-shortener
+spec:
+  type: ClusterIP
+  selector:
+    app: url-cassandra
+  ports:
+    - name: url-cassandra
+      port: 9042
+      targetPort: 9042

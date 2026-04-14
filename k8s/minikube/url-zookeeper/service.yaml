@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: url-zookeeper
+  namespace: url-shortener
+spec:
+  selector:
+    app: url-zookeeper
+  ports:
+    - name: client
+      port: 2181
+      targetPort: 2181
+  clusterIP: None

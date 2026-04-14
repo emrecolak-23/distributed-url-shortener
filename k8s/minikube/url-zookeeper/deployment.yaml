@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: url-zookeeper
+  namespace: url-shortener
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: url-zookeeper
+  template:
+    metadata:
+      labels:
+        app: url-zookeeper
+    spec:
+      containers:
+        - name: url-zookeeper
+          image: zookeeper:3.9
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ZOO_MY_ID
+              value: "1"
+            - name: ZOO_4LW_COMMANDS_WHITELIST
+              value: "ruok,mntr,conf"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "0.5"
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+          ports:
+            - name: client
+              containerPort: 2181
+            - name: follower
+              containerPort: 2888
+            - name: election
+              containerPort: 3888
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "echo ruok | nc localhost 2181 | grep imok"]
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: zookeeper-data
+              mountPath: /data
+      volumes:
+        - name: zookeeper-data
+          emptyDir: {}
